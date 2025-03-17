@@ -50,7 +50,7 @@ const validateSpot = [
 
 
 const validateQueryFilters = [
-  //implement
+  //check this, to implement
   check('page')
     .isInt({min: 1})
     .withMessage('Page must be at least 1'),
