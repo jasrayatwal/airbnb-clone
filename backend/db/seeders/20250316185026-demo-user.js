@@ -1,6 +1,6 @@
 'use strict';
 
-const { User } = require('../models');
+const { User, Spot } = require('../models');
 const bcrypt = require("bcryptjs");
 
 let options = {};
@@ -11,7 +11,7 @@ if (process.env.NODE_ENV === 'production') {
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await User.bulkCreate([
+    const users = await User.bulkCreate([
       {
         email: 'demo@user.io',
         username: 'Demo-lition',
@@ -34,9 +34,39 @@ module.exports = {
         lastName: 'Two'
       }
     ], { validate: true });
+
+    await Spot.bulkCreate([
+      {
+        ownerId: users[0].id,
+        address: '123 Disney Lane',
+        city: 'San Francisco',
+        state: 'California',
+        country: 'United States of America',
+        lat: 37.7645358,
+        lng: -122.4730327,
+        name: 'App Academy',
+        description: 'Place where web developers are created',
+        price: 123
+      },
+      {
+        ownerId: users[1].id,
+        address: '95 3rd St',
+        city: 'San Francisco',
+        state: 'California',
+        country: 'United States of America',
+        lat: 37.7866019,
+        lng: -122.4028268,
+        name: 'App Academy',
+        description: 'Coding Bootcamp',
+        price: 500
+      }
+    ], { validate: true });
   },
 
   async down (queryInterface, Sequelize) {
+    options.tableName = 'Spots';
+    await queryInterface.bulkDelete(options, {});
+
     options.tableName = 'Users';
     const Op = Sequelize.Op;
     return queryInterface.bulkDelete(options, {
