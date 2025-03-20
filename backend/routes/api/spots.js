@@ -68,8 +68,13 @@ const validateQueryFilters = [
 
 //get all Spots
 router.get('/', async(req, res) => {
-  const spots = await Spot.findAll();
-  return res.status(200).json({Spots: spots});
+  try{
+    const spots = await Spot.findAll();
+    return res.status(200).json({Spots: spots});
+  } catch(error){
+      next(error);
+  }
+
 });
 
 router.post('/', requireAuth, validateSpot, async(req, res) => {
@@ -85,10 +90,13 @@ router.post('/', requireAuth, validateSpot, async(req, res) => {
     description: req.body.description,
     price: req.body.price
   }
+  try{
+    const newSpot = await Spot.create(spotData);
 
-  const newSpot = await Spot.create(spotData);
-
-  return res.status(201).json(newSpot);
+    return res.status(201).json(newSpot);
+  } catch(error){
+      next(error);
+  }
 });
 
 module.exports = router;
