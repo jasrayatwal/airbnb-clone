@@ -50,24 +50,43 @@ const validateSpot = [
 
 
 const validateQueryFilters = [
-  //check this, to implement
   check('page')
-    .isInt({min: 1})
-    .withMessage('Page must be at least 1'),
+    .optional()
+    .isInt({ min: 1 })
+    .withMessage('Page must be greater than or equal to 1'),
   check('size')
-    .isInt({min: 1, max: 20})
-    .withMessage('Size must be at least 1 and less than 20'),
+    .optional()
+    .isInt({ min: 1, max: 20 })
+    .withMessage('Size must be between 1 and 20'),
+  check('minLat')
+    .optional()
+    .isFloat({ min: -90, max: 90 })
+    .withMessage('Minimum latitude is invalid'),
+  check('maxLat')
+    .optional()
+    .isFloat({ min: -90, max: 90 })
+    .withMessage('Maximum latitude is invalid'),
+  check('minLng')
+    .optional()
+    .isFloat({ min: -180, max: 180 })
+    .withMessage('Minimum longitude is invalid'),
+  check('maxLng')
+    .optional()
+    .isFloat({ min: -180, max: 180 })
+    .withMessage('Maximum longitude is invalid'),
   check('minPrice')
-    .isFloat({ min: 0})
-    .withMessage('Min price must be at least 0'),
+    .optional()
+    .isFloat({ min: 0 })
+    .withMessage('Minimum price must be greater than or equal to 0'),
   check('maxPrice')
-    .isFloat( { min: 0})
-    .withMessage('Max price must be at least 0'),
+    .optional()
+    .isFloat({ min: 0 })
+    .withMessage('Maximum price must be greater than or equal to 0'),
   handleValidationErrors
 ];
 
 //get all Spots
-router.get('/', async(req, res) => {
+router.get('/', async(req, res, next) => {
   try{
     const spots = await Spot.findAll();
     return res.status(200).json({Spots: spots});
@@ -76,6 +95,27 @@ router.get('/', async(req, res) => {
   }
 
 });
+
+//get spot by specific id
+router.get('/:id', async(req, res, next) => {
+  try {
+    const specificSpot = await Spot.findOne({
+      where: {
+        id: req.params.id
+      },
+    });
+
+    if(!specificSpot){
+      const err = new Error(`Spot ${req.params.id} can not be found `);
+      err.status = 404;
+      return next(err);
+    }
+
+    return res.status(200).json(specificSpot);
+  } catch(error){
+    next(error);
+  }
+})
 
 router.post('/', requireAuth, validateSpot, async(req, res) => {
   const spotData = {
