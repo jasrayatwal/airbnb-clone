@@ -6,6 +6,7 @@ const csurf = require('csurf');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const { ValidationError } = require('sequelize');
+const path = require('path') //for frontend
 
 const { environment } = require('./config');
 const isProduction = environment === 'production';
@@ -43,6 +44,11 @@ app.use(
 );
 
 app.use(routes);
+app.use(express.static(path.join(__dirname, '../frontend')));
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/index.html'))
+});
 
 // Catch unhandled requests and forward to error handler.
 app.use((_req, _res, next) => {
