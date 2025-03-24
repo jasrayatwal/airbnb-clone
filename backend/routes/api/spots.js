@@ -88,12 +88,82 @@ const validateQueryFilters = [
 //get all Spots
 router.get('/', async(req, res, next) => {
   try{
-    const spots = await Spot.findAll();
-    return res.status(200).json({Spots: spots});
+    const spots = await Spot.findAll({
+      include: {
+        model: SpotImage,
+        attributes: ['url'],
+        required: false,
+      }
+    });
+
+    const formattedSpots = spots.map(spot => {
+      const spotData = spot.toJSON();
+      return {
+        id: spotData.id,
+        ownerId: spotData.ownerId,
+        address: spotData.address,
+        city: spotData.city,
+        state: spotData.state,
+        country: spotData.country,
+        lat: spotData.lat,
+        lng: spotData.lng,
+        name: spotData.name,
+        description: spotData.description,
+        price: spotData.price,
+        createdAt: spotData.createdAt,
+        updatedAt: spotData.updatedAt,
+        avgRating: null, // Will be implemented with Reviews
+        previewImage: spotData.SpotImages[0]?.url || null
+      };
+    });
+
+    return res.status(200).json({Spots: formattedSpots});
   } catch(error){
       next(error);
   }
 
+});
+
+//get all spots owned by the current user)
+router.get('/current', requireAuth, async (req, res, next) => {
+  const user = req.user.id;
+  try {
+    const userSpots = await Spot.findAll({
+      where: {
+        ownerId: user
+      },
+      include: {
+        model: SpotImage,
+        attributes: ['url'],
+        required: false,
+      }
+    });
+
+    const formattedSpots = userSpots.map(spot => {
+      const spotData = spot.toJSON();
+      return {
+        id: spotData.id,
+        ownerId: spotData.ownerId,
+        address: spotData.address,
+        city: spotData.city,
+        state: spotData.state,
+        country: spotData.country,
+        lat: spotData.lat,
+        lng: spotData.lng,
+        name: spotData.name,
+        description: spotData.description,
+        price: spotData.price,
+        createdAt: spotData.createdAt,
+        updatedAt: spotData.updatedAt,
+        avgRating: null, // Will be implemented with Reviews
+        previewImage: spotData.SpotImages[0]?.url || null
+      };
+    });
+
+    return res.status(200).json({Spots: formattedSpots});
+  } catch (error){
+    next(error);
+  }
 });
 
 //get spot by specific id
@@ -103,6 +173,17 @@ router.get('/:id', async(req, res, next) => {
       where: {
         id: req.params.id
       },
+      include: [
+        {
+          model: SpotImage,
+          attributes: ['id', 'url', 'preview']
+        },
+        {
+          model: User,
+          as: 'Owner',
+          attributes: ['id', 'firstName', 'lastName']
+        }
+      ]
     });
 
     if(!specificSpot){
@@ -111,12 +192,17 @@ router.get('/:id', async(req, res, next) => {
       return next(err);
     }
 
+    //To be implemented with Reviews
+    specificSpot.numReviews = null;
+    specificSpot.avgStarRating = null;
+
     return res.status(200).json(specificSpot);
   } catch(error){
     next(error);
   }
 })
 
+//add a spot
 router.post('/', requireAuth, validateSpot, async(req, res) => {
   const spotData = {
     ownerId: req.user.id, //user posting spot
@@ -135,7 +221,121 @@ router.post('/', requireAuth, validateSpot, async(req, res) => {
 
     return res.status(201).json(newSpot);
   } catch(error){
-      next(error);
+      next(error); //validation 400 status?
+  }
+});
+
+//add an image to a spot based on the Spot's ID
+router.post('/:id/images', requireAuth, async (req, res, next) => {
+
+  try {
+    const spot = await Spot.findOne({
+      where: {
+        id: req.params.id
+      }
+    });
+
+    if(!spot) {
+      const err = new Error("Spot couldn't be found");
+      err.status = 404;
+      return next(err);
+    }
+
+    if(spot.ownerId !== req.user.id){
+      const err = new Error("Forbidden");
+      err.status = 403;
+      return next(err);
+    }
+
+    const {url, preview} = req.body;
+    const newImage = await SpotImage.create({
+      spotId: spot.id,
+      url,
+      preview
+    });
+
+    return res.status(201).json({
+      id: newImage.id,
+      url: newImage.url,
+      preview: newImage.preview
+    });
+
+  } catch(error){
+    next(error);
+  }
+});
+
+//edit a spot
+router.put('/:id', requireAuth, async(req, res, next) => {
+  try {
+    const spot = await Spot.findOne({
+      where: {
+        id: req.params.id
+      }
+    });
+
+    if(!spot) {
+      const err = new Error("Spot couldn't be found");
+      err.status = 404;
+      return next(err);
+    }
+
+    if(spot.ownerId !== req.user.id){
+      const err = new Error("Forbidden");
+      err.status = 403;
+      return next(err);
+    }
+
+    spot.set({
+      address: req.body.address,
+      city: req.body.city,
+      state: req.body.state,
+      country: req.body.country,
+      lat: req.body.lat,
+      lng: req.body.lng,
+      name: req.body.name,
+      description: req.body.description,
+      price: req.body.price
+    })
+
+    await spot.save();
+
+    res.status(200).send(spot);
+
+  }catch(error){
+    next(error);
+  }
+});
+
+//delete a spot
+router.delete('/:id', requireAuth, async (req, res, next) => {
+  try {
+    const spot = await Spot.findOne({
+      where: {
+        id: req.params.id
+      }
+    });
+
+    if(!spot) {
+      const err = new Error("Spot couldn't be found");
+      err.status = 404;
+      return next(err);
+    }
+
+    if(spot.ownerId !== req.user.id){
+      const err = new Error("Forbidden");
+      err.status = 403;
+      return next(err);
+    }
+
+    await spot.destroy();
+
+    return res.status(200).send({
+      message: "Successfully deleted"
+    });
+
+  }catch(error){
+    next(error);
   }
 });
 
