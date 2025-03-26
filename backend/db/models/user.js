@@ -16,12 +16,12 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'CASCADE'
       });
 
-      /*implement later
       User.hasMany(models.Review, {
         foreignKey: 'userId',
         onDelete: 'CASCADE'
       });
 
+      /*implement later
       User.hasMany(models.Booking, {
         foreignKey: 'userId',
         onDelete: 'CASCADE'

@@ -330,7 +330,7 @@ router.delete('/:id', requireAuth, async (req, res, next) => {
 
     await spot.destroy();
 
-    return res.status(200).send({
+    return res.status(200).json({
       message: "Successfully deleted"
     });
 

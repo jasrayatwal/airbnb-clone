@@ -1,6 +1,6 @@
 'use strict';
 
-const { User, Spot } = require('../models');
+const { User, Spot, Review } = require('../models');
 const bcrypt = require("bcryptjs");
 
 let options = {};
@@ -61,11 +61,41 @@ module.exports = {
         price: 500
       }
     ], { validate: true });
+
+    await Review.bulkCreate([
+      {
+        spotId: 1,
+        userId: 2,
+        review: "It was great, parking was tough.",
+        stars: 4
+      },
+      {
+        spotId: 1,
+        userId: 3,
+        review: "Unique but a lot of noise.",
+        stars: 3
+      },
+      {
+        spotId: 2,
+        userId: 1,
+        review: "Great location.",
+        stars: 5
+      },
+      {
+        spotId: 2,
+        userId: 3,
+        review: "modern setup but wifi was not great.",
+        stars: 4
+      }
+    ], { validate: true });
   },
 
   async down (queryInterface, Sequelize) {
+    options.tableName = 'Reviews';
+    await queryInterface.bulkDelete(options);
+
     options.tableName = 'Spots';
-    await queryInterface.bulkDelete(options, {});
+    await queryInterface.bulkDelete(options);
 
     options.tableName = 'Users';
     const Op = Sequelize.Op;
