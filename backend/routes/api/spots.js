@@ -300,7 +300,7 @@ router.put('/:id', requireAuth, async(req, res, next) => {
 
     await spot.save();
 
-    res.status(200).send(spot);
+    res.status(201).send(spot);
 
   }catch(error){
     next(error);
