@@ -5,7 +5,7 @@
 let options = {};
 
 if (process.env.NODE_ENV === 'production') {
-  options.schema = process.env.SCHEMA;  // define your schema in options object
+  options.schema = process.env.SCHEMA;
 }
 
 module.exports = {
@@ -16,14 +16,15 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    await queryInterface.addColumn('Users', 'firstName', {
+    options.tableName = "Users";
+    await queryInterface.addColumn(options, 'firstName', {
       type: Sequelize.STRING(30),
       allowNull: false,
-    }, options);
-    await queryInterface.addColumn('Users', 'lastName', {
+    });
+    await queryInterface.addColumn(options, 'lastName', {
       type: Sequelize.STRING(30),
       allowNull: false,
-    }, options);
+    });
   },
 
   async down (queryInterface, Sequelize) {
