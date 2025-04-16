@@ -23,7 +23,7 @@ const validateReview = [
 
 
 //get all reviews of the current user
-router.get('/', requireAuth, async (req, res, next) => {
+router.get('/current', requireAuth, async (req, res, next) => {
   const user = req.user.id;
 
   try{
@@ -199,7 +199,7 @@ router.put('/:id', requireAuth, validateReview, async(req, res, next) => {
 
     await reviewToEdit.save();
 
-    res.status(201).json({
+    res.status(200).json({
       id: reviewToEdit.id,
       userId: reviewToEdit.userId,
       spotId: reviewToEdit.spotId,

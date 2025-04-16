@@ -8,3 +8,4 @@ const { setTokenCookie, requireAuth } = require('../../utils/auth');
 const review = require('../../db/models/review');
 
 const router = express.Router();
+
