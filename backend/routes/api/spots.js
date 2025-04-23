@@ -1,5 +1,5 @@
 const express = require('express');
-const { User, Spot, SpotImage, Review, ReviewImage} = require('../../db/models');
+const { User, Spot, SpotImage, Review, ReviewImage, sequelize} = require('../../db/models');
 const { Op } = require('sequelize');
 
 const { check } = require('express-validator');
@@ -147,10 +147,28 @@ router.get('/', validateQueryFilters, async(req, res, next) => {
     if (maxPrice) where.price = { ...where.price, [Op.lte]: parseFloat(maxPrice) };
 
     const spots = await Spot.findAll({
-      include: {
+      include: [
+      {
         model: SpotImage,
         attributes: ['url'],
         required: false,
+      },
+      {
+        model: Review,
+        attributes: [],
+        required: false,
+      }],
+      attributes: {
+        include: [
+          [
+            sequelize.literal(`(
+              SELECT ROUND(COALESCE(AVG(stars), 0), 1)
+              FROM "Reviews"
+              WHERE "Reviews"."spotId" = "Spot"."id"
+            )`),
+            'avgRating'
+          ]
+        ]
       },
       limit: size,
       offset: size * (page - 1)
@@ -172,7 +190,7 @@ router.get('/', validateQueryFilters, async(req, res, next) => {
         price: spotData.price,
         createdAt: spotData.createdAt,
         updatedAt: spotData.updatedAt,
-        avgRating: null,
+        avgRating: spotData.avgRating || null,
         previewImage: spotData.SpotImages[0]?.url || null
       };
     });
@@ -192,10 +210,29 @@ router.get('/current', requireAuth, async (req, res, next) => {
       where: {
         ownerId: user
       },
-      include: {
-        model: SpotImage,
-        attributes: ['url'],
-        required: false,
+      include: [
+        {
+          model: SpotImage,
+          attributes: ['url'],
+          required: false,
+        },
+        {
+          model: Review,
+          attributes: [],
+          required: false,
+        }
+      ],
+      attributes: {
+        include: [
+          [
+            sequelize.literal(`(
+              SELECT ROUND(COALESCE(AVG(stars), 0), 1)
+              FROM "Reviews"
+              WHERE "Reviews"."spotId" = "Spot"."id"
+            )`),
+            'avgRating'
+          ]
+        ]
       }
     });
 
@@ -215,7 +252,7 @@ router.get('/current', requireAuth, async (req, res, next) => {
         price: spotData.price,
         createdAt: spotData.createdAt,
         updatedAt: spotData.updatedAt,
-        avgRating: null,
+        avgRating: spotData.avgRating || null,
         previewImage: spotData.SpotImages[0]?.url || null
       };
     });
@@ -279,8 +316,33 @@ router.get('/:id', async(req, res, next) => {
           model: User,
           as: 'Owner',
           attributes: ['id', 'firstName', 'lastName']
+        },
+        {
+          model: Review,
+          attributes: [],
+          required: false
         }
-      ]
+      ],
+      attributes: {
+        include: [
+          [
+            sequelize.literal(`(
+              SELECT COUNT(*)
+              FROM "Reviews"
+              WHERE "Reviews"."spotId" = "Spot"."id"
+            )`),
+            'numReviews'
+          ],
+          [
+            sequelize.literal(`(
+              SELECT ROUND(COALESCE(AVG(stars), 0), 1)
+              FROM "Reviews"
+              WHERE "Reviews"."spotId" = "Spot"."id"
+            )`),
+            'avgStarRating'
+          ]
+        ]
+      }
     });
 
     if(!specificSpot){
@@ -288,10 +350,6 @@ router.get('/:id', async(req, res, next) => {
       err.status = 404;
       return next(err);
     }
-
-
-    specificSpot.numReviews = null;
-    specificSpot.avgStarRating = null;
 
     return res.status(200).json(specificSpot);
   } catch(error){
