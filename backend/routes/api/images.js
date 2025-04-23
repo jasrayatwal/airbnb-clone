@@ -4,7 +4,7 @@ const { requireAuth } = require('../../utils/auth');
 
 const router = express.Router();
 
-router.delete('/spot-images/:imageId', requireAuth, async (req, res) => {
+router.delete('/spot-images/:imageId', requireAuth, async (req, res, next) => {
   try {
     const spotImage = await SpotImage.findOne({
       where: {id: req.params.imageId},
@@ -34,7 +34,7 @@ router.delete('/spot-images/:imageId', requireAuth, async (req, res) => {
   }
 });
 
-router.delete('/review-images/:imageId', requireAuth, async (req, res) => {
+router.delete('/review-images/:imageId', requireAuth, async (req, res, next) => {
   try {
     const reviewImage = await ReviewImage.findOne({
       where: {id: req.params.imageId},
@@ -50,7 +50,7 @@ router.delete('/review-images/:imageId', requireAuth, async (req, res) => {
       return next(err);
     }
 
-    if(reviewImage.Review.ownerId !== req.user.id){
+    if(reviewImage.Review.userId !== req.user.id){
       const err = new Error("Forbidden");
       err.status = 403;
       return next(err);
