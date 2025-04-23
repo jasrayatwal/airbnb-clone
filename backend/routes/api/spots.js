@@ -4,7 +4,7 @@ const { Op } = require('sequelize');
 
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
-const { setTokenCookie, requireAuth } = require('../../utils/auth');
+const { requireAuth } = require('../../utils/auth');
 
 const router = express.Router();
 
@@ -318,7 +318,7 @@ router.post('/', requireAuth, validateSpot, async(req, res) => {
 
     return res.status(201).json(newSpot);
   } catch(error){
-      next(error); 
+      next(error);
   }
 });
 
