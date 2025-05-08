@@ -2,6 +2,10 @@
   display: none;
 }
 
+.pointer {
+  cursor: pointer;
+}
+
 .profile-dropdown {
 
 }
