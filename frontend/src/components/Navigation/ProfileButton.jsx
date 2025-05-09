@@ -41,7 +41,7 @@ function ProfileButton({ user }) {
   const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
 
   return (
-    <>
+    <div>
       <button className='pointer' onClick={toggleMenu}>
         <FaUserCircle />
       </button>
@@ -70,7 +70,7 @@ function ProfileButton({ user }) {
           </div>
         )}
       </ul>
-    </>
+    </div>
   );
 }
 

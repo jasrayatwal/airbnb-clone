@@ -9,3 +9,19 @@
 .profile-dropdown {
 
 }
+
+button, ul {
+  display: flex;
+  justify-content: space-between;
+  list-style-type: none;
+}
+
+button {
+  border-radius: 10px;
+  padding-left: 25px;
+}
+
+
+nav {
+  border-bottom: 0.8px solid black;
+}
