@@ -9,7 +9,7 @@ module.exports = {
     typeValidation: true
   },
   production: {
-    use_env_variable: 'postgresql://jsa_db_user:tEnUNoF3pUZ4wLPSy8WioxjwAYdxlBAH@dpg-cvvl3midbo4c7389fva0-a/jsa_db',
+    use_env_variable: 'DATABASE_URL',
     dialect: 'postgres',
     seederStorage: 'sequelize',
     dialectOptions: {
