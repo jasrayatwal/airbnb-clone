@@ -1,6 +1,6 @@
 'use strict';
 
-const { User, Spot, Review } = require('../models');
+const { User, Spot, Review, SpotImage } = require('../models');
 const bcrypt = require("bcryptjs");
 
 let options = {};
@@ -68,8 +68,133 @@ module.exports = {
         name: 'App Academy',
         description: 'Coding Bootcamp',
         price: 500
+      },
+      {
+        ownerId: users[0].id,
+        address: '95 3rd St',
+        city: 'San Francisco',
+        state: 'California',
+        country: 'United States of America',
+        lat: 37.7866019,
+        lng: -122.4028268,
+        name: 'App Academy',
+        description: 'Coding Bootcamp',
+        price: 500
+      },
+      {
+        ownerId: users[2].id,
+        address: '95 3rd St',
+        city: 'San Francisco',
+        state: 'California',
+        country: 'United States of America',
+        lat: 37.7866019,
+        lng: -122.4028268,
+        name: 'App Academy',
+        description: 'Coding Bootcamp',
+        price: 500
+      },
+      {
+        ownerId: users[3].id,
+        address: '95 3rd St',
+        city: 'San Francisco',
+        state: 'California',
+        country: 'United States of America',
+        lat: 37.7866019,
+        lng: -122.4028268,
+        name: 'App Academy',
+        description: 'Coding Bootcamp',
+        price: 500
+      },
+      {
+        ownerId: users[2].id,
+        address: '95 3rd St',
+        city: 'San Francisco',
+        state: 'California',
+        country: 'United States of America',
+        lat: 37.7866019,
+        lng: -122.4028268,
+        name: 'App Academy',
+        description: 'Coding Bootcamp',
+        price: 500
+      },
+      {
+        ownerId: users[1].id,
+        address: '95 3rd St',
+        city: 'San Francisco',
+        state: 'California',
+        country: 'United States of America',
+        lat: 37.7866019,
+        lng: -122.4028268,
+        name: 'App Academy',
+        description: 'Coding Bootcamp',
+        price: 500
+      },
+      {
+        ownerId: users[3].id,
+        address: '95 3rd St',
+        city: 'San Francisco',
+        state: 'California',
+        country: 'United States of America',
+        lat: 37.7866019,
+        lng: -122.4028268,
+        name: 'App Academy',
+        description: 'Coding Bootcamp',
+        price: 500
+      },
+      {
+        ownerId: users[0].id,
+        address: '95 3rd St',
+        city: 'San Francisco',
+        state: 'California',
+        country: 'United States of America',
+        lat: 37.7866019,
+        lng: -122.4028268,
+        name: 'App Academy',
+        description: 'Coding Bootcamp',
+        price: 500
       }
     ], { validate: true });
+
+    options.tableName = 'SpotImages';
+    await SpotImage.bulkCreate([
+      {
+        spotId:1,
+        url: "https://images.pexels.com/photos/208745/pexels-photo-208745.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+        preview: true
+      }, {
+        spotId:2,
+        url: "https://images.pexels.com/photos/208745/pexels-photo-208745.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+        preview: true
+      }, {
+        spotId:3,
+        url: "https://images.pexels.com/photos/208745/pexels-photo-208745.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+        preview: true
+      }, {
+        spotId:4,
+        url: "https://images.pexels.com/photos/208745/pexels-photo-208745.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+        preview: true
+      }, {
+        spotId:5,
+        url: "https://images.pexels.com/photos/208745/pexels-photo-208745.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+        preview: true
+      }, {
+        spotId:6,
+        url: "https://images.pexels.com/photos/208745/pexels-photo-208745.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+        preview: true
+      }, {
+        spotId:7,
+        url: "https://images.pexels.com/photos/208745/pexels-photo-208745.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+        preview: true
+      }, {
+        spotId:8,
+        url: "https://images.pexels.com/photos/208745/pexels-photo-208745.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+        preview: true
+      }, {
+        spotId:9,
+        url: "https://images.pexels.com/photos/208745/pexels-photo-208745.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+        preview: true
+      }
+    ], {validate: true});
 
     options.tableName = 'Reviews';
     await Review.bulkCreate([
@@ -80,19 +205,19 @@ module.exports = {
         stars: 4
       },
       {
-        spotId: 1,
+        spotId: 2,
         userId: 3,
         review: "Unique but a lot of noise.",
         stars: 3
       },
       {
-        spotId: 2,
+        spotId: 3,
         userId: 1,
         review: "Great location.",
         stars: 5
       },
       {
-        spotId: 2,
+        spotId: 4,
         userId: 3,
         review: "modern setup but wifi was not great.",
         stars: 4
@@ -105,6 +230,9 @@ module.exports = {
     await queryInterface.bulkDelete(options);
 
     options.tableName = 'Spots';
+    await queryInterface.bulkDelete(options);
+
+    options.tableName = 'SpotImages';
     await queryInterface.bulkDelete(options);
 
     options.tableName = 'Users';
