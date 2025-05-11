@@ -158,6 +158,7 @@ router.get('/', validateQueryFilters, async(req, res, next) => {
         attributes: [],
         required: false,
       }],
+      /*
       attributes: {
         include: [
           [
@@ -170,6 +171,7 @@ router.get('/', validateQueryFilters, async(req, res, next) => {
           ]
         ]
       },
+      */
       limit: size,
       offset: size * (page - 1)
     });
