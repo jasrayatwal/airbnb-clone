@@ -11,7 +11,8 @@ const db = {};
 
 let sequelize;
 if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
+  //sequelize = new Sequelize(process.env[config.use_env_variable], config);
+  sequelize = new Sequelize('postgresql://jsa_db_user:tEnUNoF3pUZ4wLPSy8WioxjwAYdxlBAH@dpg-cvvl3midbo4c7389fva0-a/jsa_db', config);
 } else {
   sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
