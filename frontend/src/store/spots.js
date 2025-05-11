@@ -1,3 +1,4 @@
+import { csrfFetch } from './csrf.js';
 
 const GET_ALL_SPOTS = '/GET_ALL_SPOTS';
 
@@ -9,18 +10,25 @@ const loadSpots = (spots) => {
 }
 
 export const getAllSpots = () => async (dispatch) => {
-  const response = await fetch('/api/spots');
+  try {
 
-  if (response.ok) {
-    const data = await response.json();
 
-    dispatch(loadSpots(data.Spots));
-    return data;
+    const response = await csrfFetch('/api/spots');
+
+    if (response.ok) {
+      console.log(response);
+      const data = await response.json();
+
+      dispatch(loadSpots(data.Spots));
+      return data;
+    }
+  }catch (error){
+    console.error('Error getting spots: ', error);
+    throw error;
   }
 };
 
-const initialState = {};
-
+const initialState = {allSpots: {}};
 
 const spotsReducer = (state = initialState, action) => {
   switch (action.type) {
