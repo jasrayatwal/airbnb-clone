@@ -17,6 +17,7 @@ const LandingPage = () => {
       <div>
         {spots.map(spot => (
           <div key={spot.id}>
+            <img src={spot.previewImage} alt="" />
             <span>{spot.city}, {spot.state}</span>
             <span> {spot.avgRating}</span>
             <span> ${spot.price}</span>

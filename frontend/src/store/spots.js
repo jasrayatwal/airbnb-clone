@@ -1,4 +1,4 @@
-import { csrfFetch } from './csrf.js';
+//import { csrfFetch } from './csrf.js';
 
 const GET_ALL_SPOTS = '/GET_ALL_SPOTS';
 
@@ -13,7 +13,7 @@ export const getAllSpots = () => async (dispatch) => {
   try {
 
 
-    const response = await csrfFetch('/api/spots');
+    const response = await fetch('/api/spots');
 
     if (response.ok) {
       console.log(response);
