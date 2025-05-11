@@ -1,5 +1,5 @@
 
-const GET_ALL_SPOTS = '/';
+const GET_ALL_SPOTS = '/GET_ALL_SPOTS';
 
 const loadSpots = (spots) => {
   return {
@@ -9,7 +9,7 @@ const loadSpots = (spots) => {
 }
 
 export const getAllSpots = () => async (dispatch) => {
-  const response = await fetch('api/spots');
+  const response = await fetch('/api/spots');
 
   if (response.ok) {
     const data = await response.json();

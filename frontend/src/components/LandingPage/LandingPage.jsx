@@ -7,11 +7,11 @@ const LandingPage = () => {
   const dispatch = useDispatch();
   const spots = useSelector(state => Object.values(state.spots.allSpots || {}));
 
-  console.log(spots);
-
   useEffect(() => {
     dispatch(getAllSpots());
   }, [dispatch]);
+
+  if (!spots.length) return <div>Loading...</div>;
 
   return (
       <div>
