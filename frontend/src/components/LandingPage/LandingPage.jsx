@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllSpots } from '../../store/spots';
 import { FaStar } from "react-icons/fa";
+import { Link } from 'react-router-dom';
 import './LandingPage.css'
 
 const LandingPage = () => {
@@ -12,20 +13,26 @@ const LandingPage = () => {
     dispatch(getAllSpots());
   }, [dispatch]);
 
-  if (!spots.length) return <div>Loading...</div>;
-
   return (
-      <div className='spots'>
-        {spots.map(spot => (
-          <div key={spot.id} className='specific-spot'>
-            <img src={spot.previewImage} alt="" />
-            <div className='city-state'>{spot.city}, {spot.state}</div>
-            <div className='price'> <b>${spot.price}</b> night</div>
-            <div className='rating'><FaStar/> 4.5</div> {/*{spot.avgRating}*/}
+    <div className='spots'>
+      {spots.map(spot => (
+        <div key={spot.id} className='specific-spot'>
+          <Link to={`/spots/${spot.id}`}>
+            <img src={spot.previewImage} alt={spot.name} />
+          </Link>
+          <div className='spot-info'>
+            <div className='spot-rating'>
+              <span className='city-state'>{spot.city}, {spot.state}</span>
+              <span className='rating'><FaStar /> {4.5}</span>
+            </div>
+            <p className='price'>
+              <span>${spot.price}</span> night
+            </p>
           </div>
-        ))}
-      </div>
-  );
+        </div>
+      ))}
+    </div>
+);
 }
 
 export default LandingPage;
