@@ -42,8 +42,8 @@ function ProfileButton({ user }) {
 
   return (
     <div>
-      <button className='pointer' onClick={toggleMenu}>
-        <FaUserCircle />
+      <button className='user-menu' onClick={toggleMenu}>
+        <FaUserCircle className='user-icon'/>
       </button>
       <ul className={ulClassName} ref={ulRef}>
         {user ? (
@@ -52,11 +52,11 @@ function ProfileButton({ user }) {
             <li>{user.firstName} {user.lastName}</li>
             <li>{user.email}</li>
             <li>
-              <button className='pointer' onClick={logout}>Log Out</button>
+              <button onClick={logout}>Log Out</button>
             </li>
           </>
         ) : (
-          <div className='pointer'>
+          <div>
             <OpenModalMenuItem
               itemText="Log In"
               onItemClick={closeMenu}

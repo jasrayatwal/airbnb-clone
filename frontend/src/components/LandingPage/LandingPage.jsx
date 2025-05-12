@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllSpots } from '../../store/spots';
+import { FaStar } from "react-icons/fa";
 import './LandingPage.css'
 
 const LandingPage = () => {
@@ -14,13 +15,13 @@ const LandingPage = () => {
   if (!spots.length) return <div>Loading...</div>;
 
   return (
-      <div>
+      <div className='spots'>
         {spots.map(spot => (
-          <div key={spot.id}>
+          <div key={spot.id} className='specific-spot'>
             <img src={spot.previewImage} alt="" />
-            <span>{spot.city}, {spot.state}</span>
-            <span> {spot.avgRating}</span>
-            <span> ${spot.price}</span>
+            <div className='city-state'>{spot.city}, {spot.state}</div>
+            <div className='price'> <b>${spot.price}</b> night</div>
+            <div className='rating'><FaStar/> 4.5</div> {/*{spot.avgRating}*/}
           </div>
         ))}
       </div>
