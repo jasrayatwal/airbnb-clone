@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { FaUserCircle } from 'react-icons/fa';
 import { AiOutlineMenu } from "react-icons/ai";
+import { NavLink } from 'react-router-dom';
+import { useNavigate}  from 'react-router-dom';
 import * as sessionActions from '../../store/session';
 import OpenModalMenuItem from './OpenModalMenuItem';
 import LoginFormModal from '../LoginFormModal/LoginFormModal';
@@ -9,6 +11,7 @@ import SignupFormModal from '../SignupFormModal/SignupFormModal';
 
 function ProfileButton({ user }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
   const ulRef = useRef();
 
@@ -35,8 +38,12 @@ function ProfileButton({ user }) {
 
   const logout = (e) => {
     e.preventDefault();
-    dispatch(sessionActions.logout());
-    closeMenu();
+    dispatch(sessionActions.logout())
+    .then(() => {
+      closeMenu();
+      navigate('/');
+    })
+
   };
 
   const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
@@ -52,15 +59,20 @@ function ProfileButton({ user }) {
       <ul className={ulClassName} ref={ulRef}>
         {user ? (
           <>
-            <li>{user.username}</li>
-            <li>{user.firstName} {user.lastName}</li>
-            <li>{user.email}</li>
+            {/*<li>{user.username}</li>*/}
+            <div className='hello-elements'>
+              <li>Hello, {user.firstName} {user.lastName}</li>
+              <li>{user.email}</li>
+            </div>
+            <div className='line'>-----------------------------</div>
+              <NavLink className='manage-spots'>Manage Kitchens</NavLink>
+            <div className='line'>-----------------------------</div>
             <li>
-              <button onClick={logout}>Log Out</button>
+              <button className='logout-button' onClick={logout}>Log Out</button>
             </li>
           </>
         ) : (
-          <div>
+          <div className='log-in-out'>
             <OpenModalMenuItem
               itemText="Log In"
               onItemClick={closeMenu}

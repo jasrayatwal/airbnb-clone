@@ -16,6 +16,8 @@ const SpotDetails = () => {
 
   if (!selectedSpot) return <div>Loading.....</div>;
 
+  function reserveAlert() { return alert('To be done....')}
+
   return (
   <>
     <div className='spot-details'>
@@ -40,7 +42,7 @@ const SpotDetails = () => {
             <span className='reserve-price'>${selectedSpot.price} night</span>
             <span className='reserve-star'><FaStar/> {selectedSpot.Review ? selectedSpot.Review : 'New'}</span>
           </div>
-          <button className='reserve-button'>Reserve</button>
+          <button onClick={reserveAlert} className='reserve-button'>Reserve</button>
         </div>
      </div>
 

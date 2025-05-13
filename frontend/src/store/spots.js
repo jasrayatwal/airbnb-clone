@@ -1,7 +1,8 @@
-//import { csrfFetch } from './csrf.js';
+import { csrfFetch } from './csrf.js';
 
 const GET_ALL_SPOTS = '/GET_ALL_SPOTS';
 const GET_SPOT_DETAIL= '/GET_SPOT_DETAIL';
+const CREATE_NEW_SPOT = '/CREATE_NEW_SPOT';
 
 const loadSpots = (spots) => {
   return {
@@ -14,6 +15,13 @@ const loadSpotDetails = (spot) => {
   return {
     type: GET_SPOT_DETAIL,
     spot
+  }
+}
+
+const createSpot = (newSpot) => {
+  return {
+    type: CREATE_NEW_SPOT,
+    newSpot
   }
 }
 
@@ -53,6 +61,27 @@ export const getSpotDetails = (spotId) => async (dispatch) => {
   }
 }
 
+export const makeNewSpot = (spotInfo) => async (dispatch) => {
+  try{
+    const response = await csrfFetch('/api/spots',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(spotInfo)
+    });
+
+    if(response.ok){
+      const newSpot = await response.json();
+      dispatch(createSpot(newSpot));
+      return newSpot;
+    }
+  }catch(error){
+    console.error('Error creating spot: ', error);
+    throw error;
+  }
+}
+
 const initialState = {allSpots: {}};
 
 const spotsReducer = (state = initialState, action) => {
@@ -66,6 +95,15 @@ const spotsReducer = (state = initialState, action) => {
       return {
         ...state,
         specificSpot: action.spot
+      }
+    }
+    case CREATE_NEW_SPOT: {
+      return {
+        ...state,
+        allSpots: {
+          ...state.allSpots,
+          [action.spot.id]: action.spot
+        }
       }
     }
     default: return state;

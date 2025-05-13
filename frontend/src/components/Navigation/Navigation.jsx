@@ -18,7 +18,7 @@ function Navigation({ isLoaded }) {
             <div className='profile-management'>
               {sessionUser && (
               <span className='new-spot'>
-                <NavLink to='/spots/new' className='create-spot-link'>Create a New Spot</NavLink>
+                <NavLink to='/spots/new' className='create-spot-link'>Create a New Kitchen</NavLink>
               </span>
               )}
               <li>

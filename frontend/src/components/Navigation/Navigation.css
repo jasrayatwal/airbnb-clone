@@ -353,24 +353,29 @@ template {
   display: none;
 }
 
+.hidden .log-in-out {
+
+}
+
 .profile-dropdown {
   padding-left: 15px;
-  padding-right: 75px;
+  padding-right: 0px;
   padding-top: 5px;
   padding-bottom: 5px;
   background-color: white;
   border: 2px solid black;
-  cursor: pointer;
   list-style-type: none;
   position: absolute;
   overflow: auto;
   right: 15px;
   margin-top: 5px;
+  align-items: center;
 }
 
 .user-menu {
   margin-right: 15px;
   position: relative;
+  cursor: pointer;
 }
 
 .nav-elements {
@@ -416,4 +421,34 @@ nav {
 
 .menu-outline {
   padding-top: 5px;
+}
+
+.hello-elements {
+  margin-right: 12px;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.logout-button {
+  margin-right: 12px;
+  margin-top: 10px;
+  border-radius: 15px;
+  padding: 5px;
+  color: white;
+  background-color: red;
+  cursor: pointer;
+}
+
+.line {
+  margin-right: 12px;
+}
+
+.manage-spots {
+  text-decoration: none;
+  margin-right: 12px;
+}
+
+.log-in-out {
+  cursor: pointer;
+  margin-right: 100px;
 }
