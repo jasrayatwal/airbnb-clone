@@ -11,7 +11,7 @@ function Navigation({ isLoaded }) {
       <ul className = 'nav-elements'>
         <li>
           <NavLink to="/">
-            <img src="./KitchenBnB.png" alt="KitchenBnB" className='logo'/>
+            <img src="/KitchenBnB.png" alt="KitchenBnB" className='logo'/>
           </NavLink>
         </li>
         {isLoaded && (
