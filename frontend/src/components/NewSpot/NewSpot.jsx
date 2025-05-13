@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { makeNewSpot } from '../../store/spots';
+//import { useState } from 'react';
+//import { useDispatch } from 'react-redux';
+//import { makeNewSpot } from '../../store/spots';
 import './NewSpot.css'
 
 const NewSpot = () => {
