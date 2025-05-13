@@ -11,7 +11,10 @@ const SpotDetails = () => {
   const selectedSpot = useSelector(state => state.spots.specificSpot);
 
   useEffect(() => {
-    dispatch(getSpotDetails(id));
+    dispatch(getSpotDetails(id))
+      .catch((error) => {
+        console.error('Error loading spot details:', error);
+      });
   }, [dispatch, id]);
 
   if (!selectedSpot) return <div>Loading.....</div>;

@@ -53,6 +53,9 @@ export const getSpotDetails = (spotId) => async (dispatch) => {
 
       dispatch(loadSpotDetails(data));
       return data;
+    } else {
+      const errors = await response.json();
+      throw errors;
     }
   }catch (error){
     console.error('Error getting spot details: ', error);
@@ -93,8 +96,7 @@ const spotsReducer = (state = initialState, action) => {
     case GET_SPOT_DETAIL: {
       return {
         ...state,
-        specificSpot: action.spot,
-        allSpots: state.allSpots
+        specificSpot: action.spot
       }
     }
     case CREATE_NEW_SPOT: {
