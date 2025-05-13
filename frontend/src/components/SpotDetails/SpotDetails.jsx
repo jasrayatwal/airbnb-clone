@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getSpotDetails } from '../../store/spots';
@@ -9,12 +9,33 @@ const SpotDetails = () => {
   const {id} = useParams();
   const dispatch = useDispatch();
   const selectedSpot = useSelector(state => state.spots.specificSpot);
+  const [isLoading, setIsLoading] = useState(true);
 
+  /*
   useEffect(() => {
     dispatch(getSpotDetails(id))
   }, [dispatch, id]);
+  */
+
+  useEffect(() => {
+    const loadSpotDetails = async () => {
+      setIsLoading(true);
+      try {
+        await dispatch(getSpotDetails(id));
+      } catch (error) {
+        console.error('Error loading spot:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+      loadSpotDetails();
+  }, [dispatch, id]);
 
   function reserveAlert() { return alert('To be done....')}
+
+  if (isLoading) return <div>Loading...</div>;
+  if (!selectedSpot) return <div>Spot not found</div>;
 
   return (
   <>
@@ -40,7 +61,7 @@ const SpotDetails = () => {
             <span className='reserve-price'>${selectedSpot.price} night</span>
             <span className='reserve-star'><FaStar/> {selectedSpot.Review ? selectedSpot.Review : 'New'}</span>
           </div>
-          <button onClick={reserveAlert} className='reserve-button'>Reserve</button>
+          <button onClick={reserveAlert}className='reserve-button'>Reserve</button>
         </div>
      </div>
 

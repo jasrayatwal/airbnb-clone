@@ -34,12 +34,12 @@ const router = createBrowserRouter([
         element: <LandingPage/>
       },
       {
-        path: '/spots/new',
-        element: <NewSpot/>
-      },
-      {
         path: '/spots/:id',
         element: <SpotDetails/>
+      },
+      {
+        path: '/spots/new',
+        element: <NewSpot/>
       }
     ]
   }

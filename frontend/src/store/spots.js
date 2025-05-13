@@ -1,4 +1,4 @@
-import { csrfFetch } from './csrf.js';
+//import { csrfFetch } from './csrf.js';
 
 const GET_ALL_SPOTS = '/GET_ALL_SPOTS';
 const GET_SPOT_DETAIL= '/GET_SPOT_DETAIL';
@@ -34,7 +34,6 @@ export const getAllSpots = () => async (dispatch) => {
     if (response.ok) {
       console.log(response);
       const data = await response.json();
-
       dispatch(loadSpots(data.Spots));
       return data;
     }
@@ -53,10 +52,10 @@ export const getSpotDetails = (spotId) => async (dispatch) => {
 
       dispatch(loadSpotDetails(data));
       return data;
-    } else {
-      const errors = await response.json();
-      throw errors;
-    }
+    } //else {
+      //const errors = await response.json();
+      //throw errors;
+    //}
   }catch (error){
     console.error('Error getting spot details: ', error);
     throw error;
@@ -65,7 +64,7 @@ export const getSpotDetails = (spotId) => async (dispatch) => {
 
 export const makeNewSpot = (spotInfo) => async (dispatch) => {
   try{
-    const response = await csrfFetch('/api/spots',{
+    const response = await fetch('/api/spots',{
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
