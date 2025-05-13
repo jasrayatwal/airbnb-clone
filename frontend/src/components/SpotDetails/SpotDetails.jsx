@@ -12,12 +12,7 @@ const SpotDetails = () => {
 
   useEffect(() => {
     dispatch(getSpotDetails(id))
-      .catch((error) => {
-        console.error('Error loading spot details:', error);
-      });
   }, [dispatch, id]);
-
-  if (!selectedSpot) return <div>Loading.....</div>;
 
   function reserveAlert() { return alert('To be done....')}
 

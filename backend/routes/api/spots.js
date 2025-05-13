@@ -325,6 +325,7 @@ router.get('/:id', async(req, res, next) => {
           required: false
         }
       ],
+      /*
       attributes: {
         include: [
           [
@@ -345,6 +346,7 @@ router.get('/:id', async(req, res, next) => {
           ]
         ]
       }
+        */
     });
 
     if(!specificSpot){
