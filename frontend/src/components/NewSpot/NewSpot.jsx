@@ -12,7 +12,7 @@ const NewSpot = () => {
 
 return (
   <div className='title'>
-    <div>Create a new Kitchen</div>
+    <div>Create a new Kitchen!</div>
     <span>Where&apos;s your kitchen located?</span>
     <div>Guests will only get your exact address once they booked a reservation.</div>
 
