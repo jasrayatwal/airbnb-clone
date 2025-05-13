@@ -395,3 +395,25 @@ nav {
   position: relative;
   margin-left: 15px;
 }
+
+.profile-management {
+  display: flex;
+  align-items: center;
+}
+
+.new-spot {
+  margin-right: 15px;
+}
+
+.create-spot-link {
+  text-decoration: none;
+  color: #3c74cf;
+}
+
+.menu-outline {
+  margin-right: 5px;
+}
+
+.menu-outline {
+  padding-top: 5px;
+}

@@ -14,11 +14,18 @@ function Navigation({ isLoaded }) {
             <img src="/KitchenBnB.png" alt="KitchenBnB" className='logo'/>
           </NavLink>
         </li>
-        {isLoaded && (
-          <li>
-            <ProfileButton user={sessionUser} />
-          </li>
-        )}
+          {isLoaded && (
+            <div className='profile-management'>
+              {sessionUser && (
+              <span className='new-spot'>
+                <NavLink to='/spots/new' className='create-spot-link'>Create a New Spot</NavLink>
+              </span>
+              )}
+              <li>
+                  <ProfileButton user={sessionUser} />
+              </li>
+            </div>
+          )}
       </ul>
     </nav>
   );
