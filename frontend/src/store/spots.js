@@ -49,7 +49,6 @@ export const getSpotDetails = (spotId) => async (dispatch) => {
     const response = await fetch(`/api/spots/${spotId}`);
 
     if(response.ok) {
-      console.log(response);
       const data = await response.json();
 
       dispatch(loadSpotDetails(data));
@@ -94,7 +93,8 @@ const spotsReducer = (state = initialState, action) => {
     case GET_SPOT_DETAIL: {
       return {
         ...state,
-        specificSpot: action.spot
+        specificSpot: action.spot,
+        allSpots: state.allSpots
       }
     }
     case CREATE_NEW_SPOT: {
