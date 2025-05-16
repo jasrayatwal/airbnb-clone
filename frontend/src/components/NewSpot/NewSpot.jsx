@@ -37,9 +37,7 @@ const NewSpot = () => {
       address,
       city,
       state,
-      country,
-      lat: parseFloat(lat),
-      lng: parseFloat(lng)
+      country
     };
 
     const locationDetails = {
