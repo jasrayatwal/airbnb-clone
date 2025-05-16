@@ -47,7 +47,6 @@ const NewSpot = () => {
     }
 
     console.log("Form Data:", locationData, locationDetails);
-    // We'll handle the submission later
   };
 
 return (
@@ -106,6 +105,24 @@ return (
             {errors.state && <p className="error">{errors.state}</p>}
           </div>
         </div>
+
+        <div className='title-section'>
+          <label>
+            Create a title for your spot
+            <p className='title-description'>
+              Catch guests attention with a spot title that highlights what makes your place special.
+            </p>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Name of your spot"
+              required
+            />
+          </label>
+          {errors.title && <p className="error">{errors.title}</p>}
+        </div>
+
         <div className='locationDetails'>
           <label>
             Describe your place to guests
