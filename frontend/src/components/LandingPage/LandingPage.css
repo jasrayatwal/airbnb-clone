@@ -348,6 +348,12 @@ template {
   display: none;
 }
 
+.link {
+  text-decoration: none;
+  color: black;
+  cursor: pointer;
+}
+
 .spots {
   max-width: 1440px;
   margin-top: 25px;
@@ -366,6 +372,14 @@ template {
   display: flex;
   flex-direction: column;
   cursor: pointer;
+  border: 1px solid black;
+  padding: 5px;
+  transition: transform 0.2s ease;
+  background-color: #3c74cf;
+}
+
+.link:hover .specific-spot {
+  transform: scale(1.02);
 }
 
 .specific-spot img {

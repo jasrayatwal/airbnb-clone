@@ -32,7 +32,7 @@ const SpotDetails = () => {
       loadSpotDetails();
   }, [dispatch, id]);
 
-  function reserveAlert() { return alert('To be done....')}
+  function reserveAlert() { return alert('Feature coming soon')}
 
   if (isLoading) return <div>Loading...</div>;
   if (!selectedSpot) return <div>Spot not found</div>;

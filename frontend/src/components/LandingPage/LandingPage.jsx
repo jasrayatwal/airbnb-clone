@@ -16,10 +16,9 @@ const LandingPage = () => {
   return (
     <div className='spots'>
       {spots.map(spot => (
+        <Link key={spot.id} to={`/spots/${spot.id}`} className='link'>
         <div key={spot.id} className='specific-spot'>
-          <Link to={`/spots/${spot.id}`}>
             <img src={spot.previewImage} alt={spot.name} />
-          </Link>
           <div className='spot-info'>
             <div className='spot-rating'>
               <span className='city-state'>{spot.city}, {spot.state}</span>
@@ -30,6 +29,7 @@ const LandingPage = () => {
             </p>
           </div>
         </div>
+        </Link>
       ))}
     </div>
 );

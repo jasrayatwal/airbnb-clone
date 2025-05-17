@@ -139,7 +139,7 @@ return (
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Description - At least 30 characters"
+              placeholder="Please write at least 30 characters"
               rows="8"/>
           </label>
           {hasSubmitted && !(description.length >= 30) && <p className="error">{newErrors.description}</p>}
