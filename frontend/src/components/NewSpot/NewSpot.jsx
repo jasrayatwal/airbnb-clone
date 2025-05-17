@@ -1,20 +1,25 @@
 import { useState, useEffect } from 'react';
-//import { useDispatch } from 'react-redux';
-//import { makeNewSpot } from '../../store/spots';
+import { useDispatch } from 'react-redux';
+import { makeNewSpot } from '../../store/spots';
+import { useNavigate } from 'react-router-dom';
 import './NewSpot.css'
 
 const NewSpot = () => {
-  //const dispatch = useDispatch();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const [errors, setErrors] = useState({});
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+
+  const [newErrors, setNewErrors] = useState({});
   const [country, setCountry] = useState('');
   const [address, setAddress] = useState('');
   const [city, setCity] = useState('');
   const [state, setState] = useState('');
 
   const [description, setDescription] = useState('');
-  const [title, setTitle] = useState('');
+  const [name, setName] = useState('');
   const [price, setPrice] = useState('');
+  const [previewImage, setPreviewImage] = useState(['', '', '', '', '']);
 
   useEffect(() => {
     return () => {
@@ -23,31 +28,54 @@ const NewSpot = () => {
       setCity('');
       setState('');
       setDescription('');
-      setTitle('');
+      setName('');
       setPrice('');
-      setErrors({});
+      setPreviewImage([]);
+      setNewErrors({});
+      setHasSubmitted(false);
     };
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrors({});
+    setHasSubmitted(true);
 
-    const locationData = {
-      address,
-      city,
-      state,
-      country
-    };
+    const newErrors = {};
+    if (!country) newErrors.country = "Country is required";
+    if (!address) newErrors.address = "Street address is required";
+    if (!city) newErrors.city = "City is required";
+    if (!state) newErrors.state = "State is required";
+    if (!description || description.length < 30) newErrors.description = "Description needs 30 or more characters";
+    if (!name) newErrors.name = "Name is required";
+    if (!price) newErrors.price = "Price is required";
+    if (!previewImage[0]) newErrors.previewImage = "Preview image is required";
 
-    const locationDetails = {
-      description,
-      title,
-      price
-    }
+    setNewErrors(newErrors);
 
-    console.log("Form Data:", locationData, locationDetails);
-  };
+    if (Object.keys(newErrors).length === 0) {
+      const spotDetails = {
+        address,
+        city,
+        state,
+        country,
+        lat: 45,
+        lng: 100,
+        name,
+        description,
+        price,
+        previewImage
+      };
+
+      try {
+        const createSpot = await dispatch(makeNewSpot(spotDetails));
+        if (createSpot) {
+          navigate(`/spots/${createSpot.id}`)
+        }
+      } catch(error) {
+        console.error('Error creating spot:', error);
+      }
+  }
+};
 
 return (
     <div className='create-spot-title'>
@@ -66,20 +94,18 @@ return (
               value={country}
               onChange={(e) => setCountry(e.target.value)}
               placeholder="Country"
-              required/>
+              />
           </label>
-          {errors.country && <p className="error">{errors.country}</p>}
-
+          {hasSubmitted && !country && <p className="error">{newErrors.country}</p>}
           <label>
             Street Address
             <input
               type="text"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
-              placeholder="Address"
-              required/>
+              placeholder="Address"/>
           </label>
-          {errors.address && <p className="error">{errors.address}</p>}
+          {hasSubmitted && !address && <p className="error">{newErrors.address}</p>}
 
           <div className='city-state'>
             <label>
@@ -88,10 +114,9 @@ return (
                 type="text"
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
-                placeholder="City"
-                required/>
+                placeholder="City"/>
             </label>
-            {errors.city && <p className="error">{errors.city}</p>}
+            {hasSubmitted && !city && <p className="error">{newErrors.city}</p>}
 
             <label>
               State
@@ -99,28 +124,10 @@ return (
                 type="text"
                 value={state}
                 onChange={(e) => setState(e.target.value)}
-                placeholder="State"
-                required/>
+                placeholder="State"/>
             </label>
-            {errors.state && <p className="error">{errors.state}</p>}
+            {hasSubmitted && !state && <p className="error">{newErrors.state}</p>}
           </div>
-        </div>
-
-        <div className='title-section'>
-          <label>
-            Create a title for your spot
-            <p className='title-description'>
-              Catch guests attention with a spot title that highlights what makes your place special.
-            </p>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Name of your spot"
-              required
-            />
-          </label>
-          {errors.title && <p className="error">{errors.title}</p>}
         </div>
 
         <div className='locationDetails'>
@@ -133,11 +140,25 @@ return (
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Description - At least 30 characters"
-              rows="8"
-              minLength="30"
-              required/>
+              rows="8"/>
           </label>
-          {errors.description && <p className="error">{errors.description}</p>}
+          {hasSubmitted && !(description.length >= 30) && <p className="error">{newErrors.description}</p>}
+        </div>
+
+        <div className='name-section'>
+          <label>
+            Create a title for your spot
+            <p className='name-description'>
+              Catch guests attention with a spot title that highlights what makes your place special.
+            </p>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Name of your spot"
+            />
+          </label>
+          {hasSubmitted && !name && <p className="error">{newErrors.name}</p>}
         </div>
 
         <div className='price-section'>
@@ -152,13 +173,76 @@ return (
                 type="number"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
-                placeholder="Price per night (USD)"
-                min="1"
-                step="0.01"
-                required/>
+                placeholder="Price per night (USD)"/>
             </div>
           </label>
-          {errors.price && <p className="error">{errors.price}</p>}
+          {hasSubmitted && !price && <p className="error">{newErrors.price}</p>}
+        </div>
+
+        <div className='photos-section'>
+          <label>
+            Liven up your spot with photos
+          <p className='photos-description'>
+            Submit a link to at least one photo to publish your spot.
+          </p>
+          <input
+            type="text"
+            value={previewImage[0]}
+            onChange={(e) => {
+            const updatedImages = [...previewImage];
+            updatedImages[0] = e.target.value;
+            setPreviewImage(updatedImages);
+            }}
+            placeholder="Preview Image URL"
+          />
+          <input
+            type="text"
+            value={previewImage[1]}
+            onChange={(e) => {
+            const updatedImages = [...previewImage];
+            updatedImages[1] = e.target.value;
+            setPreviewImage(updatedImages);
+            }}
+            placeholder="Image URL"
+          />
+          <input
+            type="text"
+            value={previewImage[2]}
+            onChange={(e) => {
+            const updatedImages = [...previewImage];
+            updatedImages[2] = e.target.value;
+            setPreviewImage(updatedImages);
+            }}
+            placeholder="Image URL"
+          />
+          <input
+            type="text"
+            value={previewImage[3]}
+            onChange={(e) => {
+            const updatedImages = [...previewImage];
+            updatedImages[3] = e.target.value;
+            setPreviewImage(updatedImages);
+            }}
+            placeholder="Image URL"
+          />
+          <input
+            type="text"
+            value={previewImage[4]}
+            onChange={(e) => {
+            const updatedImages = [...previewImage];
+            updatedImages[4] = e.target.value;
+            setPreviewImage(updatedImages);
+            }}
+            placeholder="Image URL"
+          />
+          </label>
+          {hasSubmitted && !previewImage[0] && <p className="error">{newErrors.previewImage}</p>}
+        </div>
+
+        <div className='submit-button-container'>
+        <button type="submit" className='create-spot-button'>
+          Create Spot
+        </button>
         </div>
       </form>
     </div>

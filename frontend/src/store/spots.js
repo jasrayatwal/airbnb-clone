@@ -1,8 +1,9 @@
-//import { csrfFetch } from './csrf.js';
+import { csrfFetch } from './csrf.js';
 
 const GET_ALL_SPOTS = '/GET_ALL_SPOTS';
 const GET_SPOT_DETAIL= '/GET_SPOT_DETAIL';
 const CREATE_NEW_SPOT = '/CREATE_NEW_SPOT';
+const ADD_SPOT_IMAGE = '/ADD_SPOT_IMAGE';
 
 const loadSpots = (spots) => {
   return {
@@ -21,9 +22,37 @@ const loadSpotDetails = (spot) => {
 const createSpot = (newSpot) => {
   return {
     type: CREATE_NEW_SPOT,
-    newSpot
+    spot: newSpot
   }
 }
+
+const addImage = (image) => {
+  return {
+    type: ADD_SPOT_IMAGE,
+    image
+  }
+}
+
+export const addSpotImage = (spotId, imageData) => async (dispatch) => {
+  try {
+    const response = await csrfFetch(`/api/spots/${spotId}/images`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(imageData)
+    });
+
+    if (response.ok) {
+      const newImage = await response.json();
+      dispatch(addImage(newImage));
+      return newImage;
+    }
+  } catch (error) {
+    console.error('Error adding spot image: ', error);
+    throw error;
+  }
+};
 
 export const getAllSpots = () => async (dispatch) => {
   try {
@@ -52,10 +81,7 @@ export const getSpotDetails = (spotId) => async (dispatch) => {
 
       dispatch(loadSpotDetails(data));
       return data;
-    } //else {
-      //const errors = await response.json();
-      //throw errors;
-    //}
+    }
   }catch (error){
     console.error('Error getting spot details: ', error);
     throw error;
@@ -64,17 +90,38 @@ export const getSpotDetails = (spotId) => async (dispatch) => {
 
 export const makeNewSpot = (spotInfo) => async (dispatch) => {
   try{
-    const response = await fetch('/api/spots',{
+    const response = await csrfFetch('/api/spots',{
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(spotInfo)
+      body: JSON.stringify({
+        address: spotInfo.address,
+        city: spotInfo.city,
+        state: spotInfo.state,
+        country: spotInfo.country,
+        lat: spotInfo.lat,
+        lng: spotInfo.lng,
+        name: spotInfo.name,
+        description: spotInfo.description,
+        price: spotInfo.price
+      })
     });
 
     if(response.ok){
       const newSpot = await response.json();
       dispatch(createSpot(newSpot));
+
+      const previewImages = spotInfo.previewImage;
+
+      for(let i = 0; i < previewImages.length; i++){
+        if(previewImages[i] !== ''){
+          await dispatch(addSpotImage(newSpot.id, {
+            url: previewImages[i],
+            preview: i === 0
+          }));
+        }
+      }
       return newSpot;
     }
   }catch(error){
@@ -106,6 +153,19 @@ const spotsReducer = (state = initialState, action) => {
           [action.spot.id]: action.spot
         }
       }
+    }
+    case ADD_SPOT_IMAGE: {
+      // If we have a specific spot loaded, add the image to its SpotImages array
+      if (state.specificSpot && state.specificSpot.id === action.image.spotId) {
+        return {
+          ...state,
+          specificSpot: {
+            ...state.specificSpot,
+            SpotImages: [...(state.specificSpot.SpotImages || []), action.image]
+          }
+        };
+      }
+      return state;
     }
     default: return state;
   }
