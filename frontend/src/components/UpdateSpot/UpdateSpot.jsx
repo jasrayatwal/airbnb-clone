@@ -186,8 +186,8 @@ return (
           {hasSubmitted && !price && <p className="error">{newErrors.price}</p>}
         </div>
 
-        <div className='submit-button'>
-        <button type="submit" className='update-spot-button'>
+        <div className='update-kitchen-submit-button'>
+        <button type="submit" className='update-kitchen-spot-button'>
           Update Kitchen
         </button>
         </div>

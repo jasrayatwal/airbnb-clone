@@ -112,12 +112,12 @@ textarea {
   resize: vertical;
 }
 
-.submit-button {
+.update-kitchen-submit-button {
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.update-spot-button {
+.update-kitchen-spot-button {
   background-color: rgb(60, 113, 203);
   color: white;
   border-radius: 5px;
