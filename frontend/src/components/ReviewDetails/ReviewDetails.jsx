@@ -45,7 +45,7 @@ if (!selectedSpot) return null;
       <div className='review-header'>
         <div className='review-overview'>
           <FaStar className='star'/>
-          {selectedSpot.avgRating ? (
+          {selectedSpot.numReviews > 0 ? (
             <>
               {selectedSpot.avgRating} <LuDot /> {reviews.length} {reviews.length === 1 ? 'review' : 'reviews'}
             </>
