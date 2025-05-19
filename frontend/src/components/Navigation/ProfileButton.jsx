@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { FaUserCircle } from 'react-icons/fa';
 import { AiOutlineMenu } from "react-icons/ai";
 import { NavLink } from 'react-router-dom';
-//import { useNavigate}  from 'react-router-dom';
+import { useNavigate}  from 'react-router-dom';
 import * as sessionActions from '../../store/session';
 import OpenModalMenuItem from './OpenModalMenuItem';
 import LoginFormModal from '../LoginFormModal/LoginFormModal';
@@ -11,7 +11,7 @@ import SignupFormModal from '../SignupFormModal/SignupFormModal';
 
 function ProfileButton({ user }) {
   const dispatch = useDispatch();
-  //const navigate = useNavigate();
+  const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
   const ulRef = useRef();
 
@@ -41,7 +41,7 @@ function ProfileButton({ user }) {
     dispatch(sessionActions.logout())
     .then(() => {
       closeMenu();
-      //navigate('/');
+      navigate('/');
     })
 
   };
@@ -64,9 +64,9 @@ function ProfileButton({ user }) {
               <li>Hello, {user.firstName} {user.lastName}</li>
               <li>{user.email}</li>
             </div>
-            <div className='line'>-----------------------------</div>
-              <NavLink className='manage-spots'>Manage Kitchens</NavLink>
-            <div className='line'>-----------------------------</div>
+            <div className='line'>------------------------</div>
+              <NavLink to='/spots/current' className='manage-spots'   >Manage Kitchens</NavLink>
+            <div className='line'>------------------------</div>
             <li>
               <button className='logout-button' onClick={logout}>Log Out</button>
             </li>

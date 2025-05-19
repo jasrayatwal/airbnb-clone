@@ -15,18 +15,16 @@ const LandingPage = () => {
 
   return (
     <div className='spots'>
-      {spots.map(spot => (
+      {[...spots].reverse().map(spot => (
         <Link key={spot.id} to={`/spots/${spot.id}`} className='link'>
-        <div key={spot.id} className='specific-spot'>
+        <div key={spot.id} className='specific-spot' title={spot.name}>
             <img src={spot.previewImage} alt={spot.name} />
           <div className='spot-info'>
             <div className='spot-rating'>
               <span className='city-state'>{spot.city}, {spot.state}</span>
-              <span className='rating'><FaStar /> {4.5}</span>
+              <span className='rating'><FaStar className='star' /> {spot.avgRating}</span>
             </div>
-            <p className='price'>
-              <span>${spot.price}</span> night
-            </p>
+              <div className='spot-price'>${spot.price} per hr</div>
           </div>
         </div>
         </Link>

@@ -1,0 +1,92 @@
+.all-kitchens {
+  padding: 20px;
+}
+
+.manage-kitchen-title {
+  margin-bottom: 20px;
+  margin-left: 20px
+}
+
+.create-kitchen {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: rgb(60, 113, 203);
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  margin-left: 20px;
+}
+
+.no-kitchens {
+  margin-left: 20px;
+}
+
+.spots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.spot-tile {
+  border: 2px solid rgb(60, 113, 203);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.spot-content {
+  cursor: pointer;
+}
+
+.spot-tile img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.spot-info {
+  padding: 15px;
+}
+
+.location-rating {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.price {
+  display: block;
+  margin-bottom: 5px;
+  margin-top: 25px;
+  font-weight: bold;
+}
+
+.star {
+  color: #F2C265;
+}
+
+.manage-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.manage-buttons button {
+  flex: 1;
+  padding: 5px;
+  margin-bottom: 5px;
+  margin-right: 5px;
+  margin-left: 5px;
+  border: none;
+  border-radius: 4px;
+  background-color: black;
+  color: white;
+  cursor: pointer;
+}

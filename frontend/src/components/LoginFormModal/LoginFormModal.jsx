@@ -9,7 +9,10 @@ function LoginFormModal() {
   const [credential, setCredential] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
+
   const { closeModal } = useModal();
+
+  const hideButton = credential.length < 4 || password.length < 6;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -24,34 +27,65 @@ function LoginFormModal() {
       });
   };
 
+  const demoLogin = (e) => {
+        e.preventDefault();
+        return dispatch(sessionActions.login(
+          {
+            credential: 'Demo-lition',
+            password: 'password'
+          }))
+          .then(closeModal)
+          .catch(async (res) => {
+            const data = await res.json();
+            if (data && data.errors) {
+              console.log(data.errors);
+            }
+          });
+
+  };
+
   return (
-    <>
-      <h1>Log In</h1>
+    <div className='login-box'>
+      <h1 className='-login-box-title'>Log In</h1>
+      {errors.credential && (
+          <div className='error'>{errors.credential}</div>
+        )}
       <form onSubmit={handleSubmit}>
-        <label>
-          Username or Email
+        <label className='username-box'>
           <input
             type="text"
+            placeholder='Username or Email'
             value={credential}
             onChange={(e) => setCredential(e.target.value)}
-            required
           />
         </label>
-        <label>
-          Password
+        <label className='password-box'>
           <input
             type="password"
+            placeholder='Password'
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required
           />
         </label>
-        {errors.credential && (
-          <p>{errors.credential}</p>
-        )}
-        <button type="submit">Log In</button>
+
+        <div className='login-demo-buttons'>
+        <button
+          type="submit"
+          className='login-button'
+          disabled={hideButton}
+          >
+            Log In
+        </button>
+
+        <button
+          onClick={demoLogin}
+          className='demo-login'
+          >
+            Login in as Demo User
+        </button>
+        </div>
       </form>
-    </>
+    </div>
   );
 }
 

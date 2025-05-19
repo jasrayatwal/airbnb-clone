@@ -14,12 +14,18 @@ function SignupFormModal() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({});
   const { closeModal } = useModal();
+  const hideButton = !email || !username || !firstName || !lastName || !password || !confirmPassword;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (password === confirmPassword) {
-      setErrors({});
-      return dispatch(
+    if (password !== confirmPassword) {
+      return setErrors({
+        confirmPassword: "Confirm Password field must be the same as the Password field"
+      });
+    }
+    setErrors({});
+    try {
+      await dispatch(
         sessionActions.signup({
           email,
           username,
@@ -27,89 +33,84 @@ function SignupFormModal() {
           lastName,
           password
         })
-      )
-        .then(closeModal)
-        .catch(async (res) => {
-          const data = await res.json();
-          if (data?.errors) {
-            setErrors(data.errors);
-          }
-        });
+      );
+      await dispatch(sessionActions.restoreUser());
+      closeModal();
+    } catch (errorResponse) {
+      const data = await errorResponse.json();
+      if (data?.errors) {
+        setErrors(data.errors);
+      }
     }
-    return setErrors({
-      confirmPassword: "Confirm Password field must be the same as the Password field"
-    });
   };
 
   return (
-    <>
-      <h1>Sign Up</h1>
+    <div className='signup-form'>
+      <h1 className='signup-title'>Sign Up</h1>
+
+      {errors && Object.values(errors).map((error, index) => (
+      <div key={index} className="error">{error}</div>
+      ))}
+
       <form onSubmit={handleSubmit}>
         <label>
-          Email
           <input
             type="text"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            required
+            placeholder='Email'
           />
         </label>
-        {errors.email && <p>{errors.email}</p>}
         <label>
-          Username
           <input
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            required
+            placeholder='Username'
           />
         </label>
-        {errors.username && <p>{errors.username}</p>}
         <label>
-          First Name
           <input
             type="text"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
-            required
+            placeholder='First Name'
           />
         </label>
-        {errors.firstName && <p>{errors.firstName}</p>}
         <label>
-          Last Name
           <input
             type="text"
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
-            required
+            placeholder='Last Name'
           />
         </label>
-        {errors.lastName && <p>{errors.lastName}</p>}
         <label>
-          Password
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required
+            placeholder='Password'
           />
         </label>
-        {errors.password && <p>{errors.password}</p>}
         <label>
-          Confirm Password
           <input
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            required
+            placeholder='Confirm Password'
           />
         </label>
-        {errors.confirmPassword && (
-          <p>{errors.confirmPassword}</p>
-        )}
-        <button type="submit">Sign Up</button>
+
+        <button
+          type="submit"
+          className='signup-button'
+          disabled={hideButton}
+          >
+            Sign Up
+        </button>
       </form>
-    </>
+    </div>
   );
 }
 

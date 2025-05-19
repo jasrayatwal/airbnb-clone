@@ -155,28 +155,22 @@ router.get('/', validateQueryFilters, async(req, res, next) => {
       },
       {
         model: Review,
-        attributes: [],
+        attributes: ['stars'],
         required: false,
       }],
-      /*
-      attributes: {
-        include: [
-          [
-            sequelize.literal(`(
-              SELECT ROUND(COALESCE(AVG(stars), 0), 1)
-              FROM "Reviews"
-              WHERE "Reviews"."spotId" = "Spot"."id"
-            )`),
-            'avgRating'
-          ]
-        ]
-      },
-      */
       limit: size,
       offset: size * (page - 1)
     });
 
-    const formattedSpots = spots.map(spot => {
+    const average = spots.map((spot) =>{
+      const data = spot.toJSON();
+      const allSpotReviews = data.Reviews || [];
+      const sum = allSpotReviews.reduce((sum, review) => sum + review.stars, 0);
+      const avgRating = allSpotReviews.length > 0 ? (sum / allSpotReviews.length).toFixed(1) : "New";
+      return avgRating;
+    })
+
+    const formattedSpots = spots.map((spot, index) => {
       const spotData = spot.toJSON();
       return {
         id: spotData.id,
@@ -192,7 +186,7 @@ router.get('/', validateQueryFilters, async(req, res, next) => {
         price: spotData.price,
         createdAt: spotData.createdAt,
         updatedAt: spotData.updatedAt,
-        avgRating: spotData.avgRating || null,
+        avgRating: average[index],
         previewImage: spotData.SpotImages[0]?.url || null
       };
     });
@@ -220,25 +214,21 @@ router.get('/current', requireAuth, async (req, res, next) => {
         },
         {
           model: Review,
-          attributes: [],
+          attributes: ['stars'],
           required: false,
         }
-      ],
-      attributes: {
-        include: [
-          [
-            sequelize.literal(`(
-              SELECT ROUND(COALESCE(AVG(stars), 0), 1)
-              FROM "Reviews"
-              WHERE "Reviews"."spotId" = "Spot"."id"
-            )`),
-            'avgRating'
-          ]
-        ]
-      }
+      ]
     });
 
-    const formattedSpots = userSpots.map(spot => {
+    const average = userSpots.map((spot) =>{
+      const data = spot.toJSON();
+      const allSpotReviews = data.Reviews || [];
+      const sum = allSpotReviews.reduce((sum, review) => sum + review.stars, 0);
+      const avgRating = allSpotReviews.length > 0 ? (sum / allSpotReviews.length).toFixed(1) : "New";
+      return avgRating;
+    })
+
+    const formattedSpots = userSpots.map((spot, index) => {
       const spotData = spot.toJSON();
       return {
         id: spotData.id,
@@ -254,7 +244,7 @@ router.get('/current', requireAuth, async (req, res, next) => {
         price: spotData.price,
         createdAt: spotData.createdAt,
         updatedAt: spotData.updatedAt,
-        avgRating: spotData.avgRating || null,
+        avgRating: average[index],
         previewImage: spotData.SpotImages[0]?.url || null
       };
     });
@@ -321,32 +311,9 @@ router.get('/:id', async(req, res, next) => {
         },
         {
           model: Review,
-          attributes: [],
-          required: false
+          attributes: ['id','stars','review']
         }
-      ],
-      /*
-      attributes: {
-        include: [
-          [
-            sequelize.literal(`(
-              SELECT COUNT(*)
-              FROM "Reviews"
-              WHERE "Reviews"."spotId" = "Spot"."id"
-            )`),
-            'numReviews'
-          ],
-          [
-            sequelize.literal(`(
-              SELECT ROUND(COALESCE(AVG(stars), 0), 1)
-              FROM "Reviews"
-              WHERE "Reviews"."spotId" = "Spot"."id"
-            )`),
-            'avgStarRating'
-          ]
-        ]
-      }
-        */
+      ]
     });
 
     if(!specificSpot){
@@ -355,7 +322,17 @@ router.get('/:id', async(req, res, next) => {
       return next(err);
     }
 
-    return res.status(200).json(specificSpot);
+    const spotData = specificSpot.toJSON();
+    const reviews = spotData.Reviews || [];
+    const sum = reviews.reduce((sum, review) => sum + review.stars, 0);
+    const avgRating = reviews.length > 0 ? (sum / reviews.length).toFixed(1) : "New";
+    const numReviews = reviews.length;
+
+    return res.status(200).json({
+      ...spotData,
+      numReviews,
+      avgRating
+    });
   } catch(error){
     next(error);
   }
@@ -497,10 +474,10 @@ router.put('/:id', requireAuth, async(req, res, next) => {
     }
 
     spot.set({
+      country: req.body.country,
       address: req.body.address,
       city: req.body.city,
       state: req.body.state,
-      country: req.body.country,
       lat: req.body.lat,
       lng: req.body.lng,
       name: req.body.name,

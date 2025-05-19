@@ -46,7 +46,7 @@ module.exports = {
     options.tableName = 'Spots';
     await Spot.bulkCreate([
       {
-        ownerId: users[0].id,
+        ownerId: users[1].id,
         address: '123 Disney Lane',
         city: 'San Francisco',
         state: 'California',
@@ -162,6 +162,26 @@ module.exports = {
         url: "https://images.pexels.com/photos/208745/pexels-photo-208745.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
         preview: true
       }, {
+        spotId:1,
+        url: "https://images.pexels.com/photos/208745/pexels-photo-208745.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+        preview: false
+      },
+      {
+        spotId:1,
+        url: "https://images.pexels.com/photos/208745/pexels-photo-208745.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+        preview: false
+      },
+      {
+        spotId:1,
+        url: "https://images.pexels.com/photos/208745/pexels-photo-208745.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+        preview: false
+      },
+      {
+        spotId:1,
+        url: "https://images.pexels.com/photos/208745/pexels-photo-208745.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+        preview: false
+      },
+      {
         spotId:2,
         url: "https://images.pexels.com/photos/208745/pexels-photo-208745.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
         preview: true
@@ -200,9 +220,15 @@ module.exports = {
     await Review.bulkCreate([
       {
         spotId: 1,
-        userId: 2,
+        userId: 1,
         review: "It was great, parking was tough.",
         stars: 4
+      },
+      {
+        spotId: 1,
+        userId: 1,
+        review: "It was great, parking was tough.",
+        stars: 3
       },
       {
         spotId: 2,

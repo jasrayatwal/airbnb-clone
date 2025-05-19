@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { makeNewSpot } from '../../store/spots';
-import { useNavigate } from 'react-router-dom';
-import './NewSpot.css'
+import { updateUserSpot, getSpotDetails } from '../../store/spots';
+import { useNavigate, useParams } from 'react-router-dom';
+import './UpdateSpot.css'
 
-const NewSpot = () => {
+const UpdateSpot = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { spotId } = useParams();
 
   const [hasSubmitted, setHasSubmitted] = useState(false);
 
@@ -19,22 +20,26 @@ const NewSpot = () => {
   const [description, setDescription] = useState('');
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
-  const [previewImage, setPreviewImage] = useState(['', '', '', '', '']);
 
   useEffect(() => {
-    return () => {
-      setCountry('');
-      setAddress('');
-      setCity('');
-      setState('');
-      setDescription('');
-      setName('');
-      setPrice('');
-      setPreviewImage([]);
-      setNewErrors({});
-      setHasSubmitted(false);
+    if(!spotId) return;
+
+    const loadSpot = async () => {
+      try {
+        const spotData = await dispatch(getSpotDetails(spotId));
+        setCountry(spotData.country);
+        setAddress(spotData.address);
+        setCity(spotData.city);
+        setState(spotData.state);
+        setDescription(spotData.description);
+        setName(spotData.name);
+        setPrice(spotData.price);
+      } catch (error) {
+        console.error('Error loading spot:', error);
+      }
     };
-  }, []);
+    loadSpot();
+  }, [dispatch, spotId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -48,7 +53,6 @@ const NewSpot = () => {
     if (!description || description.length < 30) newErrors.description = "Description needs 30 or more characters";
     if (!name) newErrors.name = "Name is required";
     if (!price) newErrors.price = "Price is required";
-    if (!previewImage[0]) newErrors.previewImage = "Preview image is required";
 
     setNewErrors(newErrors);
 
@@ -62,25 +66,25 @@ const NewSpot = () => {
         lng: 100,
         name,
         description,
-        price,
-        previewImage
+        price
       };
 
       try {
-        const createSpot = await dispatch(makeNewSpot(spotDetails));
-        if (createSpot) {
-          navigate(`/spots/${createSpot.id}`)
+        const updateSpot = await dispatch(updateUserSpot(spotId, spotDetails));
+        if (updateSpot) {
+          navigate(`/spots/${updateSpot.id}`)
         }
       } catch(error) {
-        console.error('Error creating spot:', error);
+        console.error('Error updating spot:', error);
       }
   }
+
 };
 
 return (
-    <div className='create-spot-title'>
+    <div className='update-spot-title'>
       <div className='title'>
-        <span className='create-title'>Create a new Kitchen</span>
+        <span className='update-title'>Update Your Kitchen</span>
         <span className='second-title'>Where&apos;s your kitchen located?</span>
         <span>Guests will only get your exact address once they booked a reservation.</span>
       </div>
@@ -182,69 +186,9 @@ return (
           {hasSubmitted && !price && <p className="error">{newErrors.price}</p>}
         </div>
 
-        <div className='photos-section'>
-          <label>
-            Liven up your spot with photos
-          <p className='photos-description'>
-            Submit a link to at least one photo to publish your kitchen.
-          </p>
-          <input
-            type="text"
-            value={previewImage[0]}
-            onChange={(e) => {
-            const updatedImages = [...previewImage];
-            updatedImages[0] = e.target.value;
-            setPreviewImage(updatedImages);
-            }}
-            placeholder="Preview Image URL"
-          />
-          <input
-            type="text"
-            value={previewImage[1]}
-            onChange={(e) => {
-            const updatedImages = [...previewImage];
-            updatedImages[1] = e.target.value;
-            setPreviewImage(updatedImages);
-            }}
-            placeholder="Image URL"
-          />
-          <input
-            type="text"
-            value={previewImage[2]}
-            onChange={(e) => {
-            const updatedImages = [...previewImage];
-            updatedImages[2] = e.target.value;
-            setPreviewImage(updatedImages);
-            }}
-            placeholder="Image URL"
-          />
-          <input
-            type="text"
-            value={previewImage[3]}
-            onChange={(e) => {
-            const updatedImages = [...previewImage];
-            updatedImages[3] = e.target.value;
-            setPreviewImage(updatedImages);
-            }}
-            placeholder="Image URL"
-          />
-          <input
-            type="text"
-            value={previewImage[4]}
-            onChange={(e) => {
-            const updatedImages = [...previewImage];
-            updatedImages[4] = e.target.value;
-            setPreviewImage(updatedImages);
-            }}
-            placeholder="Image URL"
-          />
-          </label>
-          {hasSubmitted && !previewImage[0] && <p className="error">{newErrors.previewImage}</p>}
-        </div>
-
-        <div className='submit-kitchen-button'>
-        <button type="submit" className='create-spot-button'>
-          Create Kitchen
+        <div className='submit-button'>
+        <button type="submit" className='update-spot-button'>
+          Update Kitchen
         </button>
         </div>
       </form>
@@ -252,4 +196,4 @@ return (
   );
 }
 
-export default NewSpot;
+export default UpdateSpot;
