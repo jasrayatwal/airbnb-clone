@@ -14,7 +14,7 @@ function SignupFormModal() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({});
   const { closeModal } = useModal();
-  const hideButton = !email || !username || !firstName || !lastName || !password || !confirmPassword;
+  const hideButton = !email || !username || !firstName || !lastName || !password || !confirmPassword || username.length < 4 || password.length < 6;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
